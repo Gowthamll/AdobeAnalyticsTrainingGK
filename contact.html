@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      src="https://assets.adobedtm.com/6284390523f0/4baf36cdae15/launch-6823d7744018-development.min.js"
+      async
+    ></script>
+
+    <meta charset="utf-8" />
+    <title>Contact - Adobe Launch Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body {
+        font-family: Inter, Arial;
+        margin: 0;
+        background: #f5f7fb;
+        color: #111;
+      }
+      header {
+        background: #fff;
+        padding: 12px;
+        border-bottom: 1px solid #e6e9ee;
+        position: sticky;
+        top: 0;
+      }
+      nav a {
+        margin-left: 10px;
+        color: #0070f3;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      main {
+        max-width: 920px;
+        margin: 18px auto;
+        padding: 0 16px;
+      }
+      .card {
+        background: #fff;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 8px 28px rgba(16, 24, 40, 0.04);
+        margin-bottom: 14px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #d6dbe6;
+        background: white;
+        cursor: pointer;
+      }
+      form label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border-radius: 6px;
+        border: 1px solid #dfe6ee;
+      }
+    </style>
+
+    <script>
+      window.digitalData = window.digitalData || {};
+      window.digitalData.page = {
+        pageName: "contact:form",
+        pageTitle: "Contact - Demo",
+        pageURL: window.location.href,
+        siteSection: "contact",
+        pageType: "formPage",
+      };
+      window.digitalData._events = window.digitalData._events || [];
+      window.digitalData.push = function (payload) {
+        var p = Object.assign(
+          {
+            page: window.digitalData.page,
+            timestamp: new Date().toISOString(),
+          },
+          payload
+        );
+        window.digitalData._events.push(p);
+        console.info("digitalData.push ->", p);
+      };
+
+      /* Click + link handling */
+      document.addEventListener(
+        "click",
+        function (e) {
+          var el = e.target;
+          while (el && el !== document) {
+            if (el.getAttribute && el.getAttribute("data-dl-action")) {
+              var action = el.getAttribute("data-dl-action");
+              var href = el.getAttribute("href") || "";
+              window.digitalData.push({
+                event: "elementClicked",
+                action: action,
+                elementType: el.tagName.toLowerCase(),
+                elementText: el.innerText || "",
+                href: href,
+              });
+              // Demo: brochure download - open Google Sites contact page where brochure can live
+              if (action === "download_brochure_contact") {
+                // In real site you'd trigger file download; here we navigate to contact (or provide download)
+                // For demo, simulate download by opening a new tab to the live contact URL
+                window.open(
+                  "https://sites.google.com/view/adobeanalyticstraininggk/contact",
+                  "_blank"
+                );
+                return;
+              }
+              return;
+            }
+            el = el.parentNode;
+          }
+        },
+        false
+      );
+
+      /* Form submit handling */
+      document.addEventListener(
+        "submit",
+        function (e) {
+          if (e.target && e.target.id === "contactForm") {
+            e.preventDefault();
+            var name = e.target.name.value || "";
+            var email = e.target.email.value || "";
+            var message = e.target.message.value || "";
+
+            var formPayload = {
+              event: "formSubmitted",
+              formId: "contactForm",
+              formData: { name: name, email: email, message: message },
+            };
+            window.digitalData.push(formPayload);
+            alert(
+              "Form submitted (demo). Check console for digitalData.push log."
+            );
+            e.target.reset();
+          }
+        },
+        false
+      );
+    </script>
+  </head>
+  <body>
+    <header
+      style="
+        max-width: 920px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      "
+    >
+      <h1 style="margin: 0; font-size: 18px">Contact</h1>
+      <nav>
+        <a
+          href="https://sites.google.com/view/adobeanalyticstraininggk/home"
+          data-dl-action="nav_home"
+          >Home</a
+        >
+        <a
+          href="https://sites.google.com/view/adobeanalyticstraininggk/about"
+          data-dl-action="nav_about"
+          >About</a
+        >
+        <a
+          href="https://sites.google.com/view/adobeanalyticstraininggk/blog"
+          data-dl-action="nav_blog"
+          >Blog</a
+        >
+        <a
+          href="https://sites.google.com/view/adobeanalyticstraininggk/services"
+          data-dl-action="nav_services"
+          >Services</a
+        >
+        <a
+          href="https://sites.google.com/view/adobeanalyticstraininggk/contact"
+          data-dl-action="nav_contact"
+          >Contact</a
+        >
+      </nav>
+
+      <script
+        src="https://assets.adobedtm.com/6284390523f0/4baf36cdae15/launch-43088a8cdf38.min.js"
+        async
+      ></script>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Download Our Brochure</h2>
+        <p>
+          Click the button to download the demo brochure. (Demo behavior: opens
+          the live contact page where you can host a PDF.)
+        </p>
+        <button class="btn" data-dl-action="download_brochure_contact">
+          Download Brochure (Demo)
+        </button>
+      </section>
+
+      <section class="card">
+        <h2>Contact Form</h2>
+        <form id="contactForm">
+          <label
+            >Name
+            <input name="name" type="text" required />
+          </label>
+          <label
+            >Email
+            <input name="email" type="email" required />
+          </label>
+          <label
+            >Message
+            <textarea name="message" rows="4" required></textarea>
+          </label>
+          <div style="margin-top: 12px">
+            <button class="btn" type="submit" data-dl-action="form_submit">
+              Submit
+            </button>
+            <button class="btn" type="reset" data-dl-action="form_reset">
+              Reset
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h3>Other quick actions</h3>
+        <p>
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/services"
+            data-dl-action="quick_open_services"
+            >Open Services (live)</a
+          >
+          |
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/blog"
+            data-dl-action="quick_open_blog"
+            >Open Blog (live)</a
+          >
+        </p>
+      </section>
+    </main>
+
+    <footer style="max-width: 920px; margin: 18px auto; text-align: center">
+      © Demo Company
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      src="https://assets.adobedtm.com/6284390523f0/4baf36cdae15/launch-6823d7744018-development.min.js"
+      async
+    ></script>
+
+    <script
+      src="https://assets.adobedtm.com/6284390523f0/4baf36cdae15/launch-43088a8cdf38.min.js"
+      async
+    ></script>
+
+    <meta charset="utf-8" />
+    <title>Home - Adobe Launch Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      :root {
+        --brand: #0070f3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+      }
+      body {
+        font-family: Inter, system-ui, Arial;
+        margin: 0;
+        background: var(--bg);
+        color: #111;
+      }
+      header {
+        background: var(--card);
+        padding: 18px 22px;
+        border-bottom: 1px solid #e6e9ee;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      header .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      nav a {
+        margin-left: 14px;
+        text-decoration: none;
+        color: var(--brand);
+        font-weight: 600;
+      }
+      main {
+        max-width: 980px;
+        margin: 22px auto;
+        padding: 0 18px;
+      }
+      .hero {
+        background: var(--card);
+        padding: 26px;
+        border-radius: 12px;
+        box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+      }
+      .hero h2 {
+        margin: 0 0 8px;
+        font-size: 26px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #d6dbe6;
+        background: white;
+        cursor: pointer;
+        margin-right: 10px;
+        font-weight: 600;
+      }
+      .btn.primary {
+        background: var(--brand);
+        color: white;
+        border-color: var(--brand);
+      }
+      .link {
+        color: var(--brand);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .cards {
+        display: flex;
+        gap: 14px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+      .card {
+        flex: 1 1 220px;
+        background: var(--card);
+        padding: 14px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(16, 24, 40, 0.04);
+      }
+      footer {
+        max-width: 980px;
+        margin: 26px auto;
+        padding: 18px;
+        background: var(--card);
+        border-radius: 10px;
+        text-align: center;
+      }
+      @media (max-width: 720px) {
+        .cards {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script>
+      /* ---------- demo digitalData + push helper (Adobe-friendly) ---------- */
+      window.digitalData = window.digitalData || {};
+      window.digitalData.page = Object.assign(
+        {},
+        window.digitalData.page || {},
+        {
+          pageName: "home:landing",
+          pageTitle: "Home - Adobe Launch Demo",
+          pageURL: window.location.href,
+          siteSection: "home",
+          pageType: "landingPage",
+          environment: "demo",
+        }
+      );
+      window.digitalData._events = window.digitalData._events || [];
+      window.digitalData.push = function (payload) {
+        try {
+          // enrich common info
+          var enriched = Object.assign(
+            {
+              page: window.digitalData.page || {},
+              timestamp: new Date().toISOString(),
+            },
+            payload || {}
+          );
+          window.digitalData._events.push(enriched);
+          console.info("digitalData.push ->", enriched);
+          return window.digitalData._events.length;
+        } catch (e) {
+          console.warn("digitalData.push failed", e);
+        }
+      };
+
+      /* delegated click capture for any element with data-dl-action */
+      document.addEventListener(
+        "click",
+        function (evt) {
+          var el = evt.target;
+          while (el && el !== document) {
+            if (el.getAttribute && el.getAttribute("data-dl-action")) {
+              var action = el.getAttribute("data-dl-action");
+              // build event payload
+              var payload = {
+                event: "elementClicked",
+                action: action,
+                elementType: el.tagName.toLowerCase(),
+                elementText: (el.innerText || el.value || "").trim(),
+                href: el.getAttribute("href") || "",
+                pageName:
+                  (window.digitalData.page &&
+                    window.digitalData.page.pageName) ||
+                  "",
+              };
+              window.digitalData.push(payload);
+
+              // perform default actionable behaviors for some demo actions
+              if (action === "cta_get_started") {
+                // navigate to services page (Google Sites URL)
+                window.location.href =
+                  "https://sites.google.com/view/adobeanalyticstraininggk/services";
+                return;
+              }
+              if (action === "cta_learn_more") {
+                // virtual pageview push for a section
+                window.digitalData.push({
+                  event: "virtualPageView",
+                  page: { pageName: "home:learn_more_section" },
+                });
+                // scroll to cards
+                var cards = document.querySelector(".cards");
+                if (cards) cards.scrollIntoView({ behavior: "smooth" });
+                return;
+              }
+              // allow default for links
+              return;
+            }
+            el = el.parentNode;
+          }
+        },
+        false
+      );
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Adobe Launch Demo</h1>
+        <nav>
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/home"
+            data-dl-action="nav_home"
+            >Home</a
+          >
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/about"
+            data-dl-action="nav_about"
+            >About</a
+          >
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/blog"
+            data-dl-action="nav_blog"
+            >Blog</a
+          >
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/services"
+            data-dl-action="nav_services"
+            >Services</a
+          >
+          <a
+            href="https://sites.google.com/view/adobeanalyticstraininggk/contact"
+            data-dl-action="nav_contact"
+            >Contact</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h2>Welcome — Adobe Analytics & Launch Training</h2>
+        <p>
+          Use this demo to practice implementing data elements and rules in
+          Adobe Launch. Click any button or link to generate a demo dataLayer
+          event.
+        </p>
+
+        <div style="margin-top: 14px">
+          <button class="btn primary" data-dl-action="cta_get_started">
+            Get Started
+          </button>
+          <button class="btn" data-dl-action="cta_learn_more">
+            Learn More (scroll)
+          </button>
+          <a
+            class="btn"
+            href="https://sites.google.com/view/adobeanalyticstraininggk/blog"
+            data-dl-action="home_quick_blog"
+            >Visit Blog</a
+          >
+        </div>
+
+        <div class="cards" aria-hidden="false">
+          <div class="card">
+            <h3>Quick Start Guide</h3>
+            <p>Learn how to set up a page-level data layer and push events.</p>
+            <a
+              class="link"
+              href="https://sites.google.com/view/adobeanalyticstraininggk/about"
+              data-dl-action="card_about"
+              >About training</a
+            >
+          </div>
+          <div class="card">
+            <h3>Hands-on Labs</h3>
+            <p>
+              Practice mapping rules to eVars/props and firing beacon on clicks.
+            </p>
+            <a
+              class="link"
+              href="https://sites.google.com/view/adobeanalyticstraininggk/services"
+              data-dl-action="card_services"
+              >See services</a
+            >
+          </div>
+          <div class="card">
+            <h3>Download Demo Brochure</h3>
+            <p>Quick brochure (PDF) for the training program.</p>
+            <a
+              class="link"
+              href="https://sites.google.com/view/adobeanalyticstraininggk/contact"
+              data-dl-action="card_contact"
+              >Contact / Download</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Demo training site — open browser console to inspect dataLayer events.
+    </footer>
+  </body>
+</html>
